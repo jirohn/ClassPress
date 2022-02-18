@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{parent()}}{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="container bg-yellow">
+        <div class="row">
+            <div class="col-md-8 cursor">
+                {% for post in pagination %}
+                    <div class="p-3 my-3 border-primary" style="border:thin" onclick="window.location.href='{{path('veranuncio',{id:post.id})}}'">
+                        <div class="d-flex bd-highlight">
+                            <div class=" bg-newp-2 flex-grow-1 bd-highlight">
+                                <h3>{{ post.titulo }}</h3>
+                                <div class="bg-newp-2 d-flex bd-highlight">{{ post.contenido }}</div>
+                                <div class="my-3 bg-yellow"> <i class="fa fa-user"></i><strong> Creado por {{ post.nombre }}</strong></div>
+                                <div class=" bg-green"><i class="far fa-clock"></i> <strong>fecha de publicacion:{{post.fecha | date}}</strong></div>
+                            </div>
+                            <div class="p-2 bd-highlight">
+                                <div class="align-self-center">
+                                    {% if post.fotos is null or  post.fotos is empty %}
+                                        <img class="sinfoto rounded" src="{{ asset('uploads/fotos/nofoto.png') }}" width="150px">
+
+                                    {% else %}
+                                        <img class="foto rounded" src="{{ asset('uploads/fotos/'~post.fotos) }}" width="150px">
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white rounded p-3 my-3">
+                    <h4>Comentarios</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+
+{% endblock %}

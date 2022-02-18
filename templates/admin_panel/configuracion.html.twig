@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - {{ config.nombre }}{% endblock %}
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet" href="{{ asset('css/adminpanel.css')  }}">
+        {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/ajax-call.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+{% endblock %}
+{% block body %}
+
+    <body id="body-pd">
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <a href="#" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">CPro Panel</span> </a>
+                <div class="nav_list"> <a href="{{ path('admin_panel') }}" class="nav_link active" id="btn1">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <a href="{{ path('adminUsuarios') }}" class="nav_link" id="btn2">
+                        <i class='bx bx-user nav_icon'></i>
+                        <span class="nav_name">Usuarios</span>
+                    </a> <a href="{{ path('administraranuncios') }}" class="nav_link" id="btn3" >
+                        <i class='bx bx-file-blank nav_icon' id="btn3"></i>
+                        <span class="nav_name" id="btn3">Anuncios</span>
+                    </a>
+                    <a href="#" class="nav_link" id="btn4" onclick="window.open('{{ path('file_manager', {'conf':'default'}) }}','name','width=600,height=400')">
+                        <i class='bx bx-images nav_icon'></i>
+                        <span class="nav_name">Imagenes</span>
+                    </a> <a href="{{ path('Config') }}" class="nav_link" id="btn6">
+                        <i class='bx bx-cog nav_icon'></i>
+                        <span class="nav_name">Configuracion</span>
+                    </a>
+                </div>
+            </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Salir</span> </a>
+        </nav>
+    </div>
+    <!--Container Main start-->
+
+    <div class="container-fluid" id="content">
+        <script type="text/javascript" language="javascript">
+
+            $(document).ready(function() { /// Wait till page is loaded
+                $("#save").click(function() {
+                    var Ruta = Routing.generate('ConfigNombre');
+                    alert('nuevos tags definidos ');
+                    $.ajax({    //create an ajax request to load_page.php
+                        type: "GET",
+                        url: Ruta,
+                        dataType: "html",
+                        data: {
+                            "texto": $('#nombre').val(),
+                        },
+                        success: function(response){
+                            $("#responsecontainer").html(response);
+                        }
+
+                    });
+
+                });
+                $("#save2").click(function() {
+                    var Ruta = Routing.generate('ConfigTags');
+                    alert('nuevo nombre definido '+$('#tags').val());
+                    $.ajax({    //create an ajax request to load_page.php
+                        type: "GET",
+                        url: Ruta,
+                        dataType: "html",
+                        data: {
+                            "texto": $('#tags').val(),
+                        },
+                        success: function(response){
+                            $("#responsecontainer").html(response);
+                        }
+
+                    });
+
+                });
+
+            });
+        </script>
+        <form class="form-control">
+            <table class="table table-hover table-sm" id="users">
+                <thead>
+                <tr>
+                    <th>
+                        Opcion
+                    </th>
+                    <th>
+                        Valor
+                    </th>
+                    <th>
+                        Guardar
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="table-dark" >
+                    <td>
+                        Nombre de Página
+                    </td>
+                    <td>
+                        <input type="nombre" id="text" class="form-group" value="{{ config.nombre }}">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" id="save">Guardar</button>
+                    </td>
+                </tr>
+                <tr class="table-dark" >
+                    <td>
+                        Tags de Pagina
+                    </td>
+                    <td>
+                        <input type="text" id="tags" class="form-group" value="{{ config.tags }}">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" id="save2">Guardar</button>
+                    </td>
+                </tr>
+                <tr class="table-dark" >
+                    <td>
+                        Logo de Pagina
+                    </td>
+                    <td>
+                        <img class="rounded-circle m-0" src="{{ asset('uploads/fotos/'~config.fotos) }}" width="150px">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="window.open('{{ path('cambiarFoto') }}','name','width=300,height=350')">Cambiar</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+
+    </div>
+    </body>
+
+{% endblock %}
+
+
+
+

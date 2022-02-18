@@ -1,0 +1,64 @@
+<div class="container-fluid" id="users">
+    <table class="container-fluid " id="users">
+        <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Correo
+            </th>
+            <th>
+                Rol
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Banear
+            </th>
+            <th>
+                Privilegios
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr class="table-dark" >
+                <td>
+                    {{ user.id }}
+                </td>
+                <td>
+                    {{ user.email }}
+                </td>
+                <td>
+                    {{ user.roles.0 }}
+                </td>
+                <td>
+                    {{ user.baneado }}
+                </td>
+                <td>
+                    <button class="container-fluid btn btn-danger">
+                        <img src="{{ asset('img/bx-stop.svg')  }}" class='img-fluid bx nav_icon'>
+                    </button>
+                </td>
+                <td>
+
+                    <button class="container-fluid btn btn-primary " id="btn" onclick="darAdmin({{ user.id }})">
+                        {% if user.roles.0 == 'ROLE_ADMIN' %}
+                            <img src="{{ asset('img/bxs-down.svg')  }}" class='img-fluid bx nav_icon'>
+                        {% else %}
+                            <img src="{{ asset('img/bxs-up.svg')  }}" class='img-fluid bx nav_icon '>
+                        {% endif %}
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="container-fluid bg-new">
+
+        <h5>Total usuarios {{ users|length }}</h5>
+    </div>
+
+</div>

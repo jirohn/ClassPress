@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - {{ config.nombre }}{% endblock %}
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet" href="{{ asset('css/adminpanel.css')  }}">
+        {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/ajax-call.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+{% endblock %}
+{% block body %}
+
+    <body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
+        <h2>Panel de administración</h2> <img class="rounded-circle m-0" src="{{ asset('uploads/fotos/'~config.fotos) }}" width="40px">
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <a href="#" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">CPro Panel</span> </a>
+                <div class="nav_list"> <a href="#" class="nav_link" id="btn1">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <a href="#" class="nav_link active" id="btn2">
+                        <i class='bx bx-user nav_icon'></i>
+                        <span class="nav_name">Usuarios</span>
+                    </a> <a href="#" class="nav_link" id="btn3" >
+                        <i class='bx bx-file-blank nav_icon' id="btn3"></i>
+                        <span class="nav_name" id="btn3">Anuncios</span>
+                    </a>
+                    <a href="#" class="nav_link" id="btn4">
+                        <i class='bx bx-images nav_icon'></i>
+                        <span class="nav_name">Imagenes</span>
+                    </a> <a href="{{ path('Config') }}" class="nav_link" id="btn6">
+                        <i class='bx bx-cog nav_icon'></i>
+                        <span class="nav_name">Configuracion</span>
+                    </a>
+                </div>
+            </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Salir</span> </a>
+        </nav>
+    </div>
+    <!--pagina principal-->
+    <div class="container-fluid" id="content">
+        <table class="table table-hover table-sm" id="users">
+            <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Correo
+                </th>
+                <th>
+                    Rol
+                </th>
+                <th>
+                    Estado
+                </th>
+                <th>
+                    Banear
+                </th>
+                <th>
+                    Privilegios
+                </th>
+                <th>
+                    Editar
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in pagination %}
+                <tr class="table-danger" >
+                    <td>
+                        {{ user.id }}
+                    </td>
+                    <td>
+                        {{ user.email }}
+                    </td>
+                    <td>
+                        {{ user.roles.0 }}
+                    </td>
+                    <td>
+                        {{ user.baneado }}
+                    </td>
+                    <td>
+                        <button class="btn btn-danger py-0">
+                            <img src="{{ asset('img/bx-stop.svg')  }}" class='bx nav_icon px-3'>
+                        </button>
+                    </td>
+                    <td>
+
+                        <button class="btn btn-primary py-0" id="btn" onclick="darAdmin({{ user.id }})">
+                            {% if user.roles.0 == 'ROLE_ADMIN' %}
+                                <img src="{{ asset('img/bxs-down.svg')  }}" class='bx nav_icon px-3'>
+                            {% else %}
+                                <img src="{{ asset('img/bxs-up.svg')  }}" class='bx nav_icon px-3'>
+                            {% endif %}
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-dark py-0">
+                            <i class='bx bx-user nav_icon px-3'></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center">
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+    <!--Container Main start-->
+
+    </body>
+    <script type="text/javascript" language="javascript">
+
+        function waitForElement(elementPath, callBack){
+            window.setTimeout(function(){
+                if($(elementPath).length){
+                    callBack(elementPath, $(elementPath));
+                }else{
+                    waitForElement(elementPath, callBack);
+                }
+            },500)
+        }
+        $(document).ready(function() { /// Wait till page is loaded
+
+            $('#btn2').click(function(){
+                $('#content').load("http://localhost/anunciate/public/index.php/admin/loaders #loader", function() {
+                    /// can add another function here
+                });
+
+                waitForElement("#content",function(){
+                    console.log("done");
+                    $('#content').load('http://localhost/anunciate/public/index.php/admin/usuarios', function() {
+                        /// can add another function here
+                    });
+                });
+
+            });
+            $('#btn3').click(function(){
+                $('#content').load('http://localhost/anunciate/public/index.php/admin/loaders #loader', function() {
+                    /// can add another function here
+                });
+
+                waitForElement("#content",function(){
+                    console.log("done");
+                    $('#content').load('http://localhost/anunciate/public/index.php/admin/anuncios', function() {
+                        /// can add another function here
+                    });
+                });
+
+            });
+
+        });
+
+    </script>
+{% endblock %}

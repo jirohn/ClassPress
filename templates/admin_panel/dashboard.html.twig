@@ -1,0 +1,254 @@
+{% extends 'admin_panel/index.html.twig' %}
+
+{% block title %}Admin - {{ config.nombre }}{% endblock %}
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet" href="{{ asset('css/style.css')  }}">
+            <link href="{{ asset('css/bootstrap.min.css')  }}" rel="stylesheet">
+            {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/ajax-modules.js') }}"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+{% endblock %}
+{% block body %}
+    {% set col1 = 0 %}
+    {% set col2 = 0 %}
+    <div class="height-100 bg-light" id="content">
+        <div class="container-fluid" id="plugins">
+            <div class="row">
+                <div class="col-md-6" id="plugin-col-1">
+                     {% if instmodules != null %}
+
+
+
+                        {% for mod in instmodules %}
+                            {% set col1 = col1 +1 %}
+                            <div class="container-fluid" id="plugin_{{ col1 }}">
+                            {% if mod.bar == 0 %}
+
+
+                                     <div class="row justify-content-center align-items-center">
+                                         <div id="plugin_{{ col1 }}_content">
+                                             <div id="modloader" style="display: none">
+                                            <img class="rounded-circle m-5" src="{{ asset('img/loader.gif') }}" width="50px">
+                                             </div>
+                                         </div>
+                                     </div>
+
+
+                                 <script type="text/javascript" language="javascript">
+
+                                     function waitForElement(elementPath, callBack){
+                                         window.setTimeout(function(){
+                                             if($(elementPath).length){
+                                                 callBack(elementPath, $(elementPath));
+                                             }else{
+                                                 waitForElement(elementPath, callBack);
+                                             }
+                                         },500)
+                                     }
+                                     $(document).ready(function() { /// Wait till page is loaded
+
+                                         $('#modloader').fadeIn(500);
+                                         $('#plugin_{{ col1 }}_content').load("{{ path( mod.modulo.funcion ) }}", function () {
+                                             /// can add another function here
+                                             $('#plugin_{{ col1 }}_content').hide();
+                                             $('#plugin_{{ col1 }}_content').fadeIn(1000);
+                                         });
+                                     });
+
+                                 </script>
+                                    {% endif %}
+                            </div>
+                                {% endfor %}
+
+
+                    {% endif %}
+
+                    <div class="container-fluid" id="addPlug">
+                        <div class="row justify-content-center align-items-center m-5">
+
+                            <div class="dropdown">
+                                <button class="dropbtn btn btn-primary">Dropdown</button>
+                                <div class="dropdown-content">
+                                    {% for modulo in modules %}
+
+                                        <button class="btn btn-primary" value="{{ modulo.nombre }}" onclick="AddModule({{ modulo.id }}, 0)">{{ modulo.nombre }}</button>
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6" id="plugin-col-2">
+                    mundo
+                </div>
+            </div>
+        </div>
+        <h4><div>
+
+
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="text-center">
+                                        Admin dashboard
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 h6">
+                                    <table class="table table-hover table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                ID
+                                            </th>
+                                            <th>
+                                                Anuncio
+                                            </th>
+                                            <th>
+                                                Creador
+                                            </th>
+                                            <th>
+                                                Fecha
+                                            </th>
+                                            <th>
+                                                Borrar
+                                            </th>
+                                        </tr>
+                                        </thead>
+
+                                        {% for anuncio in anuncios %}
+                                            <tr class="table-dark">
+                                                <td>
+                                                    {{ anuncio.id }}
+
+                                                </td>
+                                                <td>
+                                                    <a class="nav-link" href='{{path('veranuncio',{id:anuncio.id})}}'>{{ anuncio.titulo }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ anuncio.usuario.nombre }}
+                                                </td>
+                                                <td>
+                                                    null
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary py-0">
+                                                        <img src="{{ asset('img/bx-trash.svg')  }}" class='bx nav_icon px-3'>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                    <div class="container-fluid bg-new border-primary">
+
+                                        <h5>Total anuncios {{ anuncios|length }}</h5>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div></h4>
+
+    </div>
+    <div class="container-fluid" id="loader">
+        <div class="row justify-content-center align-items-center">
+            <img class="rounded-circle m-0" src="{{ asset('img/loader.gif') }}" width="150px">
+        </div>
+
+    </div>
+    <script type="text/javascript" language="javascript">
+        function AddModule(id, bar){
+            var Ruta = Routing.generate('AddMod');
+            $.ajax({
+                type: 'POST',
+                url: Ruta,
+                data: ({id: id}),
+                async: true,
+                dataType: "json",
+                success: function (responseText) {
+                    console.log('done');
+
+                    if($("#plugin_{{ col1 }}").length){
+
+
+
+                        $("#plugin_{{ col1 }}").after("<div class='container-fluid' style='display: none' id='plugin_{{ col1 + 1}}'></div>");
+                        $("#plugin_{{ col1 + 1 }}").load( " #modloader", function(){
+                            $("#plugin_{{ col1 + 1 }}").hide();
+                            $("#plugin_{{ col1 + 1 }}").fadeIn(100);
+
+                        });
+                        $("#plugin_{{ col1 + 1 }}").load( "{{ path( modules[col1].funcion) }} ", function(){
+
+
+                            $("#plugin_{{ col1 + 1 }}").hide();
+                            $("#plugin_{{ col1 + 1 }}").fadeIn(1000);
+
+                        });
+
+
+
+
+
+
+                    }else{
+                        $("#addPlug").before( "<div class='container-fluid' id='plugin_{{ col1 }}'></div>");
+                        $("#plugin_{{ col1 }}").load( " #modloader", function(){
+                            $("#plugin_{{ col1 }}").hide();
+                            $("#plugin_{{ col1 }}").fadeIn(100);
+
+                        });
+                        $("#plugin_{{ col1 }}").load( "{{ path( modules[col1].funcion) }}", function(){
+                            $("#plugin_{{ col1 + 1 }} > link ").empty();
+                            $("#plugin_{{ col1 + 1 }}").remove('link');
+                            $("#plugin_{{ col1 + 1 }}").remove('tittle');
+                            $("#plugin_{{ col1 }}").hide();
+                            $("#plugin_{{ col1 }}").fadeIn(1000);
+
+                        });
+
+
+                        {% set col1 = col1 + 1 %}
+                    }
+
+                }
+            });
+
+        }
+        function waitForElement(elementPath, callBack){
+            window.setTimeout(function(){
+                if($(elementPath).length){
+                    callBack(elementPath, $(elementPath));
+                }else{
+                    waitForElement(elementPath, callBack);
+                }
+            },500)
+        }
+        $(document).ready(function() { /// Wait till page is loaded
+
+            $('.dropdown-toggle').click(function () {
+                $('.dropdown-toggle').attr("aria-expanded", "true");
+            });
+        });
+
+    </script>
+{% endblock %}

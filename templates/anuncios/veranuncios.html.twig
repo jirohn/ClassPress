@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{parent()}}{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+   <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script src="{{ asset('js/ajax-call.js') }}"></script>
+{% endblock %}
+{% block body %}
+    {{ parent() }}
+
+    <div class="container bg-white rounded my-3 p-4">
+        <div class="d-flex bd-highlight">
+            <div class="p-2 flex-grow-1 bd-highlight" id="post">
+                <h3>{{ post.titulo }}</h3>
+                {%  set LikesDeAnuncio = post.likes | split(',') %}
+                {% if app.user.id in LikesDeAnuncio %}
+                    <div class="justify-content-center" id="boton">
+                        <button class="flex-fill btn btn-primary my-2 text-white " id="boton" style="color:#3282b8;" onclick="MeGusta({{ post.id }})">
+
+                            <i class="fa fa-thumbs-up"></i>👍{{  LikesDeAnuncio|length }}
+
+
+                    </div>
+                    {% else %}
+                        <div class="justify-content-center" id="likes">
+                            <button class="flex-fill btn-outline-primary my-2 " id="boton" style="color:#3282b8;" onclick="MeGusta({{ post.id }})">
+
+                                <i class="fa fa-thumbs-up"></i>👍{{  LikesDeAnuncio|length }}
+
+
+                        </div>
+                    {% endif %}
+
+
+                {% if app.user.id in LikesDeAnuncio %}
+                <div class="border-dark" id="texto">
+                    Te gustó este anuncio
+                    {% else %}
+
+                    {% endif %}
+                </div>
+                </button>
+                <script type="text/javascript" language="javascript">
+                    $(document).ready(function() { /// Wait till page is loaded
+                        $('#boton').click(function(){
+                            $('#post').load('http://localhost/anunciate/public/index.php/anuncios/{{ post.id }} #post', function() {
+                                /// can add another function here
+                            });
+
+                        });
+                    }); //// End of Wait till page is loaded
+                </script>
+                <div style="color:#c3f584;">
+                    <i class="far fa-clock"></i> <strong>Fecha de publicación: {{ post.fecha | date }}</strong>
+                </div>
+            </div>
+            <div class="p-2 bd-highlight">
+                <div class="align-self-center">
+                    {% if post.fotos is null or  post.fotos is empty %}
+                        <img class="sinfoto rounded" src="{{ asset('uploads/fotos/nofoto.png') }}" width="150px">
+
+                    {% else %}
+                        <img class="foto rounded" src="{{ asset('uploads/fotos/'~post.fotos) }}" width="150px">
+
+                    {% endif %}
+                </div>
+            </div>
+
+
+        </div>
+        <hr>
+        <div class="text-justify my-3">
+            {{ post.contenido }}
+        </div>
+            {% for com in comentarios %}
+                <hr>
+        <div class="text-justify my-3 bg-secondary" id="comment">
+                {{ com.comentario }}
+        </div>
+
+            {% endfor %}
+        <script type="text/javascript" language="javascript">
+            $(document).ready(function() { /// Wait till page is loaded
+                $('#coments_publicar').click(function(){
+                    $('#comment').load('http://localhost/anunciate/public/index.php/anuncios/{{ post.id }} #comment', function() {
+                        /// can add another function here
+                    });
+
+                });
+            }); //// End of Wait till page is loaded
+        </script>
+        <div class="container bg-white rounded my-3 p-4">
+        <div class="text-justify my-3">
+            {{ form(form) }}
+        </div>
+        </div>
+    </div>
+
+{% endblock %}

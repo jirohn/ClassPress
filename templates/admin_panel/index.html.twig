@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - {{ config.nombre }}{% endblock %}
+        {% block stylesheets %}
+            {{ parent() }}
+            <link rel="stylesheet" href="{{ asset('css/adminpanel.css')  }}">
+        {% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script src="{{ asset('js/ajax-call.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+{% endblock %}
+{% block body %}
+
+<body id="body-pd">
+<div class="l-navbar" id="nav-bar">
+    <nav class="nav">
+        <div>
+            <a href="#" class="nav_logo">
+                <i class='bx bx-layer nav_logo-icon'></i>
+                <span class="nav_logo-name">CPro Panel</span> </a>
+            <div class="nav_list"> <a href="{{ path('admin_panel') }}" class="nav_link active" id="btn1">
+                    <i class='bx bx-grid-alt nav_icon'></i>
+                    <span class="nav_name">Dashboard</span>
+                </a>
+                <a href="#" class="nav_link" id="btn2">
+                    <i class='bx bx-user nav_icon'></i>
+                    <span class="nav_name">Usuarios</span>
+                </a> <a href="#" class="nav_link" id="btn3" >
+                    <i class='bx bx-file-blank nav_icon' id="btn3"></i>
+                    <span class="nav_name" id="btn3">Anuncios</span>
+                </a>
+                <a href="#" class="nav_link" id="btn" onclick=" window.open('{{ path('file_manager', {'conf':'default'}) }}','name','width=600,height=400')">
+                    <i class='bx bx-images nav_icon'></i>
+                    <span class="nav_name">Imagenes</span>
+                </a>
+                <a href="#" class="nav_link" id="btn4">
+                    <i class='bx bx-images nav_icon'></i>
+                    <span class="nav_name">Imagenes</span>
+                </a>
+                <a href="{{ path('Config') }}" class="nav_link" id="btn6">
+                    <i class='bx bx-cog nav_icon'></i>
+                    <span class="nav_name">Configuracion</span>
+                </a>
+            </div>
+        </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Salir</span> </a>
+    </nav>
+</div>
+<!--Container Main start-->
+
+<div class="container-fluid" id="content">
+    <div class="row justify-content-center align-items-center">
+        <img class="rounded-circle m-0" src="{{ asset('img/loader.gif') }}" width="150px">
+    </div>
+ 
+</div>
+<script type="text/javascript" language="javascript">
+
+    function waitForElement(elementPath, callBack){
+        window.setTimeout(function(){
+            if($(elementPath).length){
+                callBack(elementPath, $(elementPath));
+            }else{
+                waitForElement(elementPath, callBack);
+            }
+        },500)
+    }
+    $(document).ready(function() { /// Wait till page is loaded
+        $('#content').load('http://localhost/anunciate/public/index.php/admin/dashboard', function() {
+            /// can add another function here
+        });
+        $('#btn2').click(function(){
+            $('#content').load("http://localhost/anunciate/public/index.php/admin/loaders #loader", function() {
+                /// can add another function here
+            });
+
+            waitForElement("#content",function(){
+                console.log("done");
+                $('#content').load('http://localhost/anunciate/public/index.php/admin/usuarios', function() {
+                    /// can add another function here
+                });
+            });
+
+        });
+        $('#btn3').click(function(){
+            $('#content').load('http://localhost/anunciate/public/index.php/admin/loaders #loader', function() {
+                /// can add another function here
+            });
+
+            waitForElement("#content",function(){
+                console.log("done");
+                $('#content').load('http://localhost/anunciate/public/index.php/admin/anuncios', function() {
+                    /// can add another function here
+                });
+            });
+
+        });
+        $('#btn4').click(function(){
+            $('#content').load('http://localhost/anunciate/public/index.php/admin/loaders #loader', function() {
+                /// can add another function here
+            });
+
+            waitForElement("#content",function(){
+                console.log("done");
+
+            });
+
+        });
+
+
+    });
+
+</script>
+</body>
+
+
+    {% endblock %}
+
